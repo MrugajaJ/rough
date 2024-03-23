@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Keyword Paragraph Finder</title>
+    <style>
+      #outputWindow {
+        border: 1px solid black;
+        padding: 10px;
+        margin-top: 10px;
+        height: 300px;
+        overflow-y: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Keyword Paragraph Finder</h1>
+    <label for="website">Enter website URL:</label>
+    <input type="text" id="website" name="website" required>
+    <br>
+    <label for="keyword">Enter keyword:</label>
+    <input type="text" id="keyword" name="keyword" required>
+    <br>
+    <button onclick="findParagraphs()">Find Paragraphs</button>
+    <div id="outputWindow"></div>
+    <script>
+      function findParagraphs() {
+        // Get the website URL and keyword inputs
+        const website = document.getElementById("website").value;
+        const keyword = document.getElementById("keyword").value.toLowerCase();
+
+        // Check if the website URL is valid
+        if (!validateUrl(website)) {
+          alert("Please enter a valid website URL.");
+          return;
+        }
+
+        // Fetch the webpage content
+        fetch(website)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text();
+          })
+          .then(data => {
+            // Extract the paragraphs containing the keyword
+            const paragraphs = data.match(/<p>.*?<\/p>/gmi);
+            let output = "";
+            if (paragraphs) {
+              // Display the paragraphs containing the keyword
+              paragraphs.forEach(paragraph => {
+                if (paragraph.toLowerCase().includes(keyword)) {
+                  output += `<p>${paragraph
